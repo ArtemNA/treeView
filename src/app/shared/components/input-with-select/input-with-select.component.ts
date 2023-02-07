@@ -27,7 +27,7 @@ export class InputWithSelectComponent implements ControlValueAccessor, OnInit {
     select: FormControl<string | null>,
     input: FormControl<string | null>
   }>;
-  constructor(fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder) {
     this.group = fb.group({
       select: [''],
       input: ['']

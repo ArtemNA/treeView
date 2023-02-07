@@ -6,7 +6,7 @@ import { AccountSelectors } from '../../core/state/selectors/account.selectors';
 import { AccountActions } from '../../core/state/actions/account.actions';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Account, AccountFlatNode } from '../../core/interfaces/model';
-import { first, map, Subject, take, takeUntil, tap } from 'rxjs';
+import { filter, first, map, Subject, take, takeUntil, tap } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -40,7 +40,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     node => node.level,
     node => node.expandable
   );
-  treeFlattener = new MatTreeFlattener(
+  treeFlattener = new MatTreeFlattener<Account, AccountFlatNode, AccountFlatNode>(
     this._transformer,
     node => node.level,
     node => node.expandable,
@@ -99,8 +99,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private applyFilter(): void {
-    this.search.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(change => {
-      if (!change) return
+    this.search.valueChanges
+      .pipe(
+      takeUntil(this.destroy$),
+      filter((change): change is {select: keyof Account, input: string} => !!change)
+      )
+      .subscribe(change => {
       this.filterTree(change.input, change.select);
       if (change.input) {
         this.treeControl.expandAll();
