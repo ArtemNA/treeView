@@ -1,0 +1,40 @@
+<div>
+  <app-input-with-select [formControl]="search" [labels]="labels" [list]="searchKeys"></app-input-with-select>
+
+  <ng-container *ngIf="(accountsList$ | async); else loading">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="[&>*:nth-child(odd)]:bg-gray-100">
+      <mat-tree-node *matTreeNodeDef="let node" [class.searched]="node.searched" matTreeNodePadding>
+        <button disabled mat-icon-button>
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <ng-container *ngTemplateOutlet="rowTemplate; context: { node }"></ng-container>
+      </mat-tree-node>
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" [class.searched]="node.searched" matTreeNodePadding>
+        <button [attr.aria-label]="'Toggle ' + node.name" mat-icon-button
+                matTreeNodeToggle>
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <ng-container *ngTemplateOutlet="rowTemplate; context: { node }"></ng-container>
+      </mat-tree-node>
+    </mat-tree>
+  </ng-container>
+</div>
+
+<ng-template #rowTemplate let-node="node">
+  <div class="flex flex-col">
+    <div>
+      <span class="text-gray-500">ID:</span> {{ node.id }}
+    </div>
+    <div>
+      <span class="text-gray-500">Name:</span> {{ node.name }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loading>
+  <mat-spinner diameter="50" class="m-auto"></mat-spinner>
+</ng-template>

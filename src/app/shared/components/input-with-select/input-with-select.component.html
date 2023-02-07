@@ -1,0 +1,14 @@
+<div [formGroup]="group" class="w-fit mx-auto sm:w-full flex flex-row flex-nowrap">
+  <mat-form-field appearance="outline" class="ml-3 select-prefix">
+    <mat-label *ngIf="labels?.selectLabel">{{ labels.selectLabel }}</mat-label>
+    <mat-select formControlName="select">
+      <mat-option *ngFor="let item of list" [value]="item">
+        {{ item | titlecase }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="mr-3 input-field">
+    <mat-label *ngIf="labels?.inputLabel">{{ labels.inputLabel }}</mat-label>
+    <input matInput formControlName="input"/>
+  </mat-form-field>
+</div>
